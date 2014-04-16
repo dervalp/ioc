@@ -6,6 +6,9 @@ var Container = function ( name, IOC ) {
 
 Container.prototype.define = function ( fn ) {
   this.fn = fn;
+
+  this.IOC.when( this.name ).use( this.name ); //register itself for default naming
+
   return this;
 };
 
@@ -24,7 +27,7 @@ function construct(constructor, args) {
 
 Container.prototype.create = function ( ) {
     var fn = this.fn,
-        variablesToInject = this.variablesToInject,
+        variablesToInject = this.variablesToInject || { },
         FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m,
         FN_ARG_SPLIT = /,/,
         FN_ARG = /^\s*(_?)(\S+?)\1\s*$/,

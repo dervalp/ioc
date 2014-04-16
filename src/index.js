@@ -28,10 +28,11 @@ var IOC = {
     return services[name] = new Locator( name );
   },
   create: function ( name ) {
-    /*console.log( "Creating..." + name)
-    console.log(containers[ name ]);
-    console.log(containers[ name ].create);
-    console.log( ".......")*/
+    var ctn = containers[ name ];
+
+    if(!ctn)
+      throw "Not found container " + name;
+
     return containers[ name ].create();
   },
   getContainer: function ( name ) {
