@@ -31,7 +31,7 @@ When you have the Object registered, here is how you create an object:
 
 ####Constructor Injection
 
-We can directly inject the object you want by analysing the paramters of your constructor.
+We can directly inject the object you want by analysing the parameters of your constructor.
 
 Registring the service:
 
