@@ -8,11 +8,12 @@ This IOC works on an applications level and act as a container for all your obje
 
 In order to re-use it later automatically, the IOC needs you to define how an Object will be instanciated.
 
-var objectDefinition = function ( name ) {
-  this.name = name;
-}
 
 ```
+  var objectDefinition = function ( name ) {
+    this.name = name;
+  }
+
   IOC.register( "uniqueKeyForAService" )
      .define( objectDefinition );
 ```
