@@ -8,19 +8,17 @@ describe("Given an IOC", function( ) {
   it("should have a when method", function( ) {
     IOC.when.should.exist;
   });
-  it("should be able to register a Class", function( ) {
+  it("should be able to do constructor injection", function( ) {
     var TestClass = function (name, $Provider) {
-      //will be an EntityService
-      //name is test
       this.name = name;
       this.provider = $Provider;
     };
 
-    IOC.register("TestClass")
+    IOC.register( "TestClass" )
        .define( TestClass )
-       .inject({ name: "Test" });
+       .inject( { name: "Test" } );
 
-    IOC.register("EntityService")
+    IOC.register( "EntityService" )
        .define( function () {
           this.entityService = true;
        } );
@@ -30,9 +28,35 @@ describe("Given an IOC", function( ) {
 
    var testService = IOC.create( "TestClass" );
 
-   testService.name.should.equal("Test");
+   testService.name.should.equal( "Test" );
    testService.provider.should.exist;
-   testService.provider.entityService.should.equal(true);
+   testService.provider.entityService.should.equal( true );
 
+  });
+  it("should be able to do property injection", function( ) {
+    var PropertyInjectionClass = function ( name ) {
+      this.name = name;
+    };
+
+    PropertyInjectionClass.$DataProvider = "injected";
+
+    IOC.register( "PropertyInjectionClass" )
+       .define( PropertyInjectionClass )
+       .inject( { name: "Test" } );
+
+    IOC.register( "PropertyInjected" )
+       .define( function () {
+          this.propertyInjected = true;
+       } );
+
+    IOC.when( "DataProvider" )
+       .use( "PropertyInjected" );
+
+   var testService = IOC.create( "PropertyInjectionClass" );
+
+   testService.name.should.equal( "Test" );
+
+   testService.$DataProvider.should.exist;
+   testService.$DataProvider.propertyInjected.should.equal(true);
   });
 });

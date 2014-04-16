@@ -29,7 +29,8 @@ Container.prototype.create = function ( ) {
         FN_ARG_SPLIT = /,/,
         FN_ARG = /^\s*(_?)(\S+?)\1\s*$/,
         STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
-        self = this;
+        self = this,
+        newArgs = [];
 
     if (typeof fn === 'function' && fn.length) { 
         var fnText = fn.toString(); // getting the source code of the function
@@ -38,7 +39,6 @@ Container.prototype.create = function ( ) {
         var matches = fnText.match(FN_ARGS); // finding arguments
         var argNames = matches[1].split(FN_ARG_SPLIT); // finding each argument name
 
-        var newArgs = [];
         for (var i = 0, l = argNames.length; i < l; i++) {
             var argName = argNames[i].trim();
 
@@ -58,20 +58,20 @@ Container.prototype.create = function ( ) {
 
             newArgs.push( variablesToInject[ argName ] );
         }
-
-        return construct( fn, newArgs );
-
-        /*self.properties.forEach( function ( propertyMetaData ) {
-
-          if( propertyMetaData in result ) {
-            Object.defineProperty(result, propertyMetaData.property , { value : propertyMetaData.className , writable : false });
-          }
-        } );*/
-
-        return result;
-    } else {
-      return construct( fn, newArgs );
     }
+
+    var result = construct( fn, newArgs );
+
+    for( var i in fn ) {
+      console.log( i );
+      if( i.indexOf("$") === 0 ) {
+          var serviceName = i.substring( 1, i.length );
+          var ctnName = self.IOC.getContainer( serviceName );
+          Object.defineProperty( result , i , { value : self.IOC.create( ctnName ) , writable : false });
+      }
+    };
+
+    return result;
 };
 
 exports = module.exports = {
