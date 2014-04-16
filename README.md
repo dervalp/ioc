@@ -136,6 +136,10 @@ To define a property dependency for your object, you just need to define a stati
   serviceB.greet(); //will output 'Hello Marty !'
 ```
 
+###Express Example
+
+You can find an express example here: https://github.com/dervalp/ioc/tree/master/test/fakeExpress
+
 ###Conclusion
 
 Of course, this is still an alpha version. The end goal is to provide an IOC container which will work seamlessly on browser and node.js. Moreover, we would like to add options to manage the lifetime of an object ( eager, lazy, singleton ) and a config file to quickly setup all the IOC.
