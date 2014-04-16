@@ -50,7 +50,7 @@ Creating the service:
 
 ###Auto-Discoverability of your dependencies
 
-By using our name convention (prefix parameter "$"), you can automaticaly declare a dependency and defining which service to use.
+By using our naming convention (prefix parameter "$"), you can automaticaly declare a dependency and defining which service to use.
 
 Register a service:
 
