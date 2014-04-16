@@ -2,13 +2,14 @@
 
 Trying to bring IOC in node.js (and later to browser).
 
-This IOC works on an applications level and act as a container for all your object being injected during the application life time.
+This IOC works on an applications level and act as a container for all your depedencies.
 
-###Registring an Object
+###How it works
 
-In order to re-use it later automatically, the IOC needs you to define how an Object will be instanciated.
+In order to use the IOC, the class needs to be registed and created by the IOC.
 
 
+####Registring
 ```
   var objectDefinition = function ( name ) {
     this.name = name;
@@ -18,18 +19,21 @@ In order to re-use it later automatically, the IOC needs you to define how an Ob
      .define( objectDefinition );
 ```
 
-###Creating the Object
+###Creating
 
-When you have the Object registred, all you need to do to create its based on the objectDefinition is to do:
+When you have the Object registered, here is how you create an object:
 
 ```
   var myUniqueKeyForAService = IOC.create( "uniqueKeyForAService" );
+  
   console.log( myUniqueKeyForAService.name ); //output undefined
 ```
 
-###Constructor Injection
+####Constructor Injection
 
-Now let's say we want to directly inject a value in the constructor. You can do it like this:
+We can directly inject the object you want by analysing the paramters of your constructor.
+
+Registring the service:
 
 ```
   IOC.register( "uniqueKeyForAService" )
@@ -37,18 +41,18 @@ Now let's say we want to directly inject a value in the constructor. You can do 
      .inject( { name: "Test" } );
 ```
 
-Then when you will create the object, it will automatically assign the appropriate value to your constructor.
+Creating the service:
 
 ```
   var myUniqueKeyForAService = IOC.create( "uniqueKeyForAService" );
   console.log( myUniqueKeyForAService.name ); //output "Test"
 ```
 
-###Auto-Discoverability
+###Auto-Discoverability of your dependencies
 
-Now let's say that I want to re-use some defintions automatically in a class.
+By using our name convention (prefix parameter "$"), you can automaticaly declare a dependency and defining which service to use.
 
-First, we need to register one service:
+Register a service:
 
 ```
   var serviceA = function ( ) {
@@ -59,11 +63,13 @@ First, we need to register one service:
      .define( serviceA );
 ```
 
-We want that "serviceA" to be automatically injected to another object.
-First you will need to define that service.
+We want the "serviceA" to be automatically injected to another object.
+
+
+Registering the dependant service:
 
 ```
-  var serviceB = function ( name, $greetingProvider ) {
+  var serviceB = function ( name, $greetingProvider //this is declaring the dependency ) {
     this.name = name;
 
     console.log( this.name + $greetingProvider.greeting + " !");
@@ -80,30 +86,26 @@ First you will need to define that service.
 
 Now that we have our 2 services registered, we need to bind the $greetingProvider with the serviceA.
 
-Just do this:
+Binding the parameter name with a service:
 
 ```
   IOC.when( "greetingProvider" )
      .use( "serviceA" );
 ```
 
-As you can see, when binding the correct property name with service, it will automatically create a serviceA object for you parameter $greetingProvider.
+**Note: when binding the parameter, you do not need '$' sign**
 
-**When binding the parameter, you do not need '$' sign**
-
-In order to get the serviceB setup, all you need to do is:
+Create your object:
 
 ```
 var serviceB = IOC.create( "serviceB" ); //will output 'Hello Marty !'
 ```
 
-
 ###Property Injection
 
-We also provide a way to directly instanciate propertis of an object using the IOC.
+We also provide a way to directly inject properties.
 
-To do this, you need to define a static property in your object.
-
+To define a property dependency for your object, you just need to define a static property.
 
 ```
   var serviceA = function ( ) {
@@ -115,8 +117,11 @@ To do this, you need to define a static property in your object.
 
  var serviceB = function ( name ) {
     this.name = name;
-    console.log( this.name + this.$greetingProvider.greeting + " !");
   };
+
+  serviceB.prototype.greet = function () {
+    console.log( this.name + this.$greetingProvider.greeting + " !");
+  }
 
   serviceB.$greetingProvider = void 0; //you can assign anything you want, we just need the key
 
@@ -129,11 +134,12 @@ To do this, you need to define a static property in your object.
   IOC.when( "greetingProvider" )
      .use( "serviceA" );
 
-  var serviceB = IOC.create( "serviceB" ); //will output 'Hello Marty !'
+  var serviceB = IOC.create( "serviceB" );
+  serviceB.greet(); //will output 'Hello Marty !'
 ```
 
 ###Conclusion
 
-Of course, this is still an alpha version. The end goal is to provide an IOC container which will work the same way in the browser and in node.js. Moreover, we would like option to manage the lifetime of an object ( eager, lazy, singleton ) and provide you config file to quickly setup all of this.
+Of course, this is still an alpha version. The end goal is to provide an IOC container which will work seamlessly on browser and node.js. Moreover, we would like to add options to manage the lifetime of an object ( eager, lazy, singleton ) and a config file to quickly setup all the IOC.
 
 To be continued...
