@@ -72,7 +72,7 @@ Registering the dependant service:
   var serviceB = function ( name, $greetingProvider //declaring the dependency ) {
     this.name = name;
 
-    console.log( this.name + $greetingProvider.greeting + " !");
+    console.log( $greetingProvider.greeting + this.name + " !");
   };
 
   IOC.register( "serviceB" )
@@ -86,16 +86,14 @@ Registering the dependant service:
 
 Now that we have our 2 services registered, we need to bind the $greetingProvider with the serviceA.
 
-Binding the parameter name with a service:
-
 ```
   IOC.when( "greetingProvider" )
      .use( "serviceA" );
 ```
 
-**Note: when binding the parameter, you do not need '$' sign**
+**Note: when binding the parameter, you do not need the '$' sign**
 
-Create your object:
+Creating your object:
 
 ```
 var serviceB = IOC.create( "serviceB" ); //will output 'Hello Marty !'
@@ -120,7 +118,7 @@ To define a property dependency for your object, you just need to define a stati
   };
 
   serviceB.prototype.greet = function () {
-    console.log( this.name + this.$greetingProvider.greeting + " !");
+    console.log( this.$greetingProvider.greeting + this.name + " !");
   }
 
   serviceB.$greetingProvider = void 0; //you can assign anything you want, we just need the key
