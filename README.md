@@ -69,7 +69,7 @@ We want the "serviceA" to be automatically injected to another object.
 Registering the dependant service:
 
 ```
-  var serviceB = function ( name, $greetingProvider //this is declaring the dependency ) {
+  var serviceB = function ( name, $greetingProvider //declaring the dependency ) {
     this.name = name;
 
     console.log( this.name + $greetingProvider.greeting + " !");
