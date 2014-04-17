@@ -44,7 +44,7 @@ var myService = app.create("TestService");
 
 ###Using the API in code
 
-####Registring
+####Registering
 ```
   var objectDefinition = function ( name ) {
     this.name = name;
