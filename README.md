@@ -137,7 +137,7 @@ To define a property dependency for your object, you just need to define a stati
 ```
 ###Life time Management
 
-IOC lets you decide what kind of lifetime you want for you object. Currently, to make thing simple, you have the choice between a singleton and an instance per dependency.
+IOC lets you decide what kind of lifetime you want for your object. Currently, to keep it simple, you have the choice between a singleton and an instance per dependency.
 
 **Singleton**
 
