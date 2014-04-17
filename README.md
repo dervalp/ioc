@@ -10,6 +10,7 @@ This IOC works on an applications level and act as a container for all your depe
 
 ###Browser Version
 
+https://raw.githubusercontent.com/dervalp/ioc/master/dist/ioc.js
 
 ###Preparing the IOC
 
