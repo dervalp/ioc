@@ -4,6 +4,11 @@ Trying to bring IOC in node.js (and later to browser).
 
 This IOC works on an applications level and act as a container for all your depedencies.
 
+###Installing IOC
+
+> npm install iocjs
+
+
 ###Preparing the IOC
 
 In order to prepare the IOC, you need to have a "ioc.json" file in the root of your application.
