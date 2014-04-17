@@ -1,0 +1,9 @@
+{
+  "register" : [
+    { "key": "TestService",  "target": "./services/testService.js" },
+    { "key": "TestService2", "target": "./services/testService2.js" }
+  ],
+  "when": [
+    { "property": "Provider", "use": "TestService" }
+  ]
+}
