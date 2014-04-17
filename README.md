@@ -51,7 +51,7 @@ var myService = app.create("TestService");
 
 ###Creating
 
-When you have the Object registered, here is how you create an object:
+When you have the Object registered, here is how you create one:
 
 ```
   var myUniqueKeyForAService = IOC.create( "uniqueKeyForAService" );
@@ -121,7 +121,7 @@ Now that we have our 2 services registered, we need to bind the $greetingProvide
      .use( "serviceA" );
 ```
 
-**By default, you can directly use the name of your unique key prefix by a '$' sign when declaring your dependency"
+**By default, you can directly use the name of your unique key prefix by a '$' sign when declaring your dependency"**
 
 **Note: when binding the parameter, you do not need the '$' sign**
 
