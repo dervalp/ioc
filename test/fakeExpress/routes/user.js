@@ -3,7 +3,8 @@
  * GET users listing.
  */
 
-exports = function ( $userRepo ) {
+module.exports = function ( $userRepo ) {
+  console.log( "CTOR - Route" );
   return {
     getById: function ( req, res ) {
       $userRepo.getById( req.body.id, function ( err, user ) {

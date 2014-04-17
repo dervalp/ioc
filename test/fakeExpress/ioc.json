@@ -1,0 +1,8 @@
+{
+  "register" : [
+    { "key": "userRoute", "target": "./routes/user.js" },
+    { "key": "mongoose",  "target": "./fakeMongoose.js" },
+    { "key": "userModel", "target": "./model/user.js" },
+    { "key": "userRepo", "target": "./repo/user.js" }
+  ]
+}

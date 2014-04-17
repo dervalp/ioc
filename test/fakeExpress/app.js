@@ -4,14 +4,12 @@
  */
 
 var express = require('express');
-var routes = require('./routes');
-var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
 var app = express();
 
-var ioc = require("./ioc");
+var ioc = require("../../src/index")( );
 
 var userController = ioc.create( "userRoute" );
 
@@ -37,7 +35,7 @@ app.get('/', function (req, res) {
 });
 
 
-app.get('/user/:id', userController.findById );
+app.get('/user/:id', userController.getById );
 
 
 http.createServer(app).listen(app.get('port'), function(){
