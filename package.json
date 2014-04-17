@@ -2,7 +2,7 @@
   "name": "ioc",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/index.js",
   "directories": {
     "test": "test"
   },

@@ -71,6 +71,7 @@ Container.prototype.getArgs = function () {
             serviceName = argName.substring( 1, argName.length );
 
             var ctnName = self.IOC.getContainer( serviceName );
+
             var service =  self.IOC.create( ctnName );
 
             variablesToInject[ argName ] = service;

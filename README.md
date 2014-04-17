@@ -4,10 +4,40 @@ Trying to bring IOC in node.js (and later to browser).
 
 This IOC works on an applications level and act as a container for all your depedencies.
 
+###Preparing the IOC
+
+In order to prepare the IOC, you need to have a "ioc.json" file in the root of your application.
+
+This file will define all the dependencies of your application. It tries to follow the same syntax as the API defined below.
+
+**ioc.json**
+
+```
+{
+  "register" : [
+    { "key": "TestService",  "target": "./services/testService.js", lifeTime: "singleton" },
+    { "key": "TestService2", "target": "./services/testService2.js", factory: "./adapters/backbone.js" },
+    { "key": "TestService3", "target": "./services/testService3.js", lazyForProperties: true }
+  ],
+  "when": [
+    { "property": "Provider", "use": "TestService" }
+  ]
+}
+```
+
 ###How it works
 
 In order to use the IOC, the class needs to be registed and created by the IOC.
 
+```
+var IOC = require("IOC");
+
+var app = IOC();
+
+var myService = app.create("TestService");
+```
+
+###Using the API in code
 
 ####Registring
 ```

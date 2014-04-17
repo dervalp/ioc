@@ -1,6 +1,8 @@
 var containers = { },
     services = { },
     container = require ("./container"),
+    path = require("path"),
+    fs = require("fs"),
     Locator = require("./locator");
 
 //TODO: factory
@@ -20,37 +22,89 @@ var findService = function ( name ) {
   return result;
 };
 
-var IOC = function () {
+var IOC = {
+  register: function ( propertyName ) {
+      if( containers[ propertyName ] ) 
+        throw "already register";
 
+      return containers[ propertyName ] = container.create( propertyName, this );
+  },
+  when: function ( name ) {
+      return services[name] = new Locator( name );
+  },
+  get: function ( name ) {
+    return containers[ name ];
+  },
+  create: function ( name ) {
+
+    var ctn = containers[ name ];
+
+    if(!ctn)
+      throw ( "Not found container " + name );
+
+    return containers[ name ].create();
+  },
+  getContainer: function ( name ) {
+      return findService ( name );
+  }
 };
 
-IOC.register = function ( propertyName ) {
-    if( containers[ propertyName ] ) 
-      throw "already register";
+var API = function ( pathToJson ) {
+  var configPath = "ioc.json" || pathToJson;
 
-    return containers[ propertyName ] = container.create( propertyName, this );
+  configPath = path.normalize( process.cwd() + "/" + configPath );
+
+  var config = fs.readFileSync( configPath );
+  config = JSON.parse( config );
+
+  if( !config.register ) {
+    throw "no dependencies defined"
+  }
+
+  config.register.forEach( buildDep );
+
+  if( config.when ) {
+    config.when.forEach( buildBinding );
+  }
+
+  return IOC;
 };
 
+var buildDep = function ( dep ) {
+  var target = path.normalize( process.cwd() + "/" + dep.target ),
+      ctn = IOC.register( dep.key ).define( require( target ) );
 
-IOC.when = function ( name ) {
-    return services[name] = new Locator( name );
+  if( dep.lifeTime ) {
+    switch ( dep.lifeTime ) {
+      case "singleton":
+        ctn.singleInstance( );
+        break;
+      default:
+        break;
+    }
+  }
+
+  if( dep.instancePerDependency ) {
+    ctn.instancePerDependency();
+  }
+
+  if( dep.lazyForProperties ) {
+    ctn.lazyForProperties();
+  }
+
+  if( dep.factory ) {
+    var factoryPath = path.normalize( process.cwd() + "/" + dep.factory );
+    ctn.factory( require( factoryPath ) );
+  }
 };
 
-IOC.get = function ( name ) {
-  return containers[ name ];
+var buildBinding = function ( b ) {
+
+  IOC.when( b.property )
+     .use( b.use );
 };
 
-IOC.create = function ( name ) {
-  var ctn = containers[ name ];
+API.IOC = IOC;
 
-  if(!ctn)
-    throw "Not found container " + name;
+exports = module.exports = API;
 
-  return containers[ name ].create();
-};
-
-IOC.getContainer = function ( name ) {
-    return findService ( name );
-};
-
-exports = module.exports = IOC;
