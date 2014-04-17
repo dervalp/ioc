@@ -137,6 +137,7 @@ To define a property dependency for your object, you just need to define a stati
   var serviceB = IOC.create( "serviceB" );
   serviceB.greet(); //will output 'Hello Marty !'
 ```
+
 ###Life time Management
 
 IOC lets you decide what kind of lifetime you want for your object. Currently, to keep it simple, you have the choice between a singleton and an instance per dependency.
@@ -164,6 +165,62 @@ IOC lets you decide what kind of lifetime you want for your object. Currently, t
 ```
 
 **Default is instancePerDependency**
+
+**lazyForProperties**
+
+When using property injection, you can defer the creation of the 
+
+```
+  IOC.register( "serviceB" )
+     .define( serviceB )
+     .instancePerDependency( )
+     .lazyForProperties()
+     .inject({
+        name: "Marty";
+     });
+```
+
+###Factories
+
+By default, we expect function as object for defining dependencies. We also support literal definition but it will be used as the prototype for the created object.
+
+```
+  IOC.register( "serviceDefinedByLiteral" )
+     .define( {
+      doSomething: function () {
+
+      },
+      $aDependency: function ( ) { } //just empty function for the key
+     } )
+     .inject({
+        name: "Marty";
+     });
+```
+
+The parameters passed to the inject method will be attached to the object.
+
+**Create your own**
+
+If you do not like our way of creating the Object, you can define your own factory method.
+
+```
+  var backboneAdapter = function ( definition, args ) {
+    var model = Backbone.extend( definition );
+    return new Model( args );
+  };
+
+  var objDefinition = {
+    doSomething: function () { },
+    $aDependency: function ( ) { } //just empty function for the key
+  };
+
+  IOC.register( "customFactory" )
+     .define( objDefinition )
+     .factory( backboneAdapter )
+     .inject({
+        name: "Marty";
+     });
+```
 
 ###Express Example
 

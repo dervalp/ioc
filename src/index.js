@@ -36,6 +36,10 @@ IOC.when = function ( name ) {
     return services[name] = new Locator( name );
 };
 
+IOC.get = function ( name ) {
+  return containers[ name ];
+};
+
 IOC.create = function ( name ) {
   var ctn = containers[ name ];
 

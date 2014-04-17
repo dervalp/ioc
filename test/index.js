@@ -1,5 +1,6 @@
 var should = require( 'should' ),
-    IOC = require("../src/index");
+    sinon = require( 'sinon' ),
+    IOC = require( '../src/index' );
 
 describe("Given an IOC", function( ) {
   it("should exist", function( ) {
@@ -84,5 +85,54 @@ describe("Given an IOC", function( ) {
 
    ( oneService.singleton === anotherService.singleton ).should.equal( true );
    oneService.singleton.name.should.equal( "Test" );
+  });
+  it("should lazy instanciate on property when lazyForProperties is set to true", function( ) {
+    var callback = sinon.spy();
+
+    var Class = function ( name ) {
+      this.name = name;
+      callback();
+    };
+
+    IOC.register( "lazyOnProperty" )
+       .define( Class )
+       .lazyForProperties( )
+       .inject( { name: "Test" } );
+
+    var oneService = function () { };
+
+    oneService.$lazyOnProperty = void 0;
+
+    IOC.register( "Wrapper" )
+       .define( oneService );
+
+   var result = IOC.create( "Wrapper" );
+
+   callback.called.should.equal( false );
+   var injectedProp = result.$lazyOnProperty;
+   callback.called.should.equal( true );
+
+  });
+  it("should support literal object definition", function( ) {
+
+    IOC.register( "forLiteral" )
+       .define( function ( ) {
+          this.forLiteral = true;
+       } );
+
+    IOC.register( "literalDef" )
+       .define( {
+          test: function () {
+            return true;
+          },
+          $forLiteral : function () { }
+        } )
+       .inject( { name: "Test" } );
+
+     var literalDef = IOC.create( "literalDef" );
+
+     literalDef.test().should.equal( true );
+     literalDef.name.should.equal( "Test" );
+     literalDef.$forLiteral.forLiteral.should.equal( true );
   });
 });

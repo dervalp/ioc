@@ -5,7 +5,9 @@ var Container = function ( name, IOC ) {
   this.properties = [];
   this.IOC = IOC;
   this.lifeTime = 0;
+  this.isLazyForProp = false;
   this.instances = [];
+  this.factory = factory.defaultCtor;
 };
 
 Container.prototype.define = function ( fn ) {
@@ -16,6 +18,10 @@ Container.prototype.define = function ( fn ) {
   return this;
 };
 
+Container.prototype.factory = function ( factory ) {
+  this.factory = factory;
+};
+
 Container.prototype.inject = function ( variablesToInject ) {
   this.variablesToInject = variablesToInject;
   return this;
@@ -23,6 +29,11 @@ Container.prototype.inject = function ( variablesToInject ) {
 
 Container.prototype.instancePerDependency = function () {
   this.lifeTime = 0;
+  return this;
+};
+
+Container.prototype.lazyForProperties = function () {
+  this.isLazyForProp = true;
   return this;
 };
 
@@ -41,7 +52,7 @@ Container.prototype.getArgs = function () {
         self = this,
         newArgs = [];
 
-  if (typeof fn === 'function' && fn.length) { 
+  if (typeof fn === 'function' && fn.length) {
       var fnText = fn.toString(); // getting the source code of the function
       fnText = fnText.replace(STRIP_COMMENTS, ''); // stripping comments like function(/*string*/ a) {}
 
@@ -67,18 +78,25 @@ Container.prototype.getArgs = function () {
 
           newArgs.push( variablesToInject[ argName ] );
       }
+    return newArgs;
+  } else {
+    return variablesToInject;
   }
-  return newArgs;
 };
 
 var initializeProperties = function ( fn, instance, IOC ) {
 
   for( var i in fn ) {
     if( i.indexOf("$") === 0 ) {
-        var serviceName = i.substring( 1, i.length );
+        var serviceName = i.substring( 1, i.length ),
+            ctnName = IOC.getContainer( serviceName ),
+            container = IOC.get( ctnName );
 
-        var ctnName = IOC.getContainer( serviceName );
-        Object.defineProperty( instance , i , { value : IOC.create( ctnName ) , writable : false });
+        if ( container.isLazyForProp ) {
+          Object.defineProperty( instance, i, { get : function () { IOC.create( ctnName, true ) } } );
+        } else {
+          Object.defineProperty( instance, i, { value : IOC.create( ctnName, true ) , writable : false } );
+        }
     }
   }
 };
@@ -88,10 +106,11 @@ Container.prototype.create = function ( ) {
         lifeTime = this.lifeTime,
         fn = this.fn,
         IOC = this.IOC,
+        factory = this.factory,
         instance;
 
     var createInstance = function ( ) {
-      instance = factory.defaultCtor( fn, args );
+      instance = factory ( fn, args );
       initializeProperties( fn, instance, IOC );
     };
 
