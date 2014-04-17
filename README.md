@@ -198,7 +198,7 @@ IOC lets you decide what kind of lifetime you want for your object. Currently, t
 
 **lazyForProperties**
 
-When using property injection, you can defer the creation of the 
+When using property injection, you can defer the creation of the Service until something uses the Property.
 
 ```
   IOC.register( "serviceB" )
