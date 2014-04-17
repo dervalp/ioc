@@ -8,6 +8,8 @@ This IOC works on an applications level and act as a container for all your depe
 
 > npm install iocjs
 
+###Browser Version
+
 
 ###Preparing the IOC
 
@@ -260,6 +262,30 @@ If you do not like our way of creating the Object, you can define your own facto
 ###Express Example
 
 You can find an express example here: https://github.com/dervalp/ioc/tree/master/test/fakeExpress
+
+###Support for browser
+
+IOC supports the browser.
+
+```
+  function subModel( ) {
+    this.sub = true;
+  };
+
+  function mainModel ( $subModel ) {
+    this.main = true;
+    this.subModel = $subModel;
+  };
+  
+  var app = IOC({
+    "register" : [
+      { "key": "mainModel", "target": "mainModel" },
+      { "key": "subModel",  "target": "subModel" }
+    ]
+  });
+
+  var mainModel = app.create( "mainModel" );
+```
 
 ###Conclusion
 

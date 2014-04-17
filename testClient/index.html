@@ -1,0 +1,32 @@
+<html>
+<head>
+  <script>
+  
+  </script>
+  <script src="../dist/ioc.js"></script>
+  <script>
+  function subModel( ) {
+    this.sub = true;
+  };
+
+  function mainModel ( $subModel ) {
+    this.main = true;
+    this.subModel = $subModel;
+  };
+  
+  var app = IOC({
+    "register" : [
+      { "key": "mainModel", "target": "mainModel" },
+      { "key": "subModel",  "target": "subModel" }
+    ]
+  });
+
+  var mainModel = app.create( "mainModel" );
+
+  console.log( mainModel );
+  </script>
+</head>
+<body>
+  
+</body>
+</html>

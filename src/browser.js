@@ -1,10 +1,8 @@
-var IOC = require( "./ioc"),
-    path = require("path"),
-    fs = require("fs");
+var IOC = require( "./ioc" );
 
 var buildDep = function ( dep ) {
-  var target = path.normalize( process.cwd() + "/" + dep.target ),
-      ctn = IOC.register( dep.key ).define( require( target ) );
+  var target = window[dep.target],
+      ctn = IOC.register( dep.key ).define( target );
 
   if( dep.lifeTime ) {
     switch ( dep.lifeTime ) {
@@ -25,26 +23,25 @@ var buildDep = function ( dep ) {
   }
 
   if( dep.factory ) {
-    var factoryPath = path.normalize( process.cwd() + "/" + dep.factory );
-    ctn.factory( require( factoryPath ) );
+    ctn.factory( window[dep.factory] );
   }
 };
 
 var buildBinding = function ( b ) {
-
   IOC.when( b.property )
      .use( b.use );
 };
 
 
-var API = function ( pathToJson ) {
-  var configPath = "ioc.json" || pathToJson;
-
-  configPath = path.normalize( process.cwd() + "/" + configPath );
-
-  var config = fs.readFileSync( configPath );
-  config = JSON.parse( config );
-
+/*
+  {
+    "register" : [
+      { "key": "userRoute", "target": "userController" },
+      { "key": "userModel",  "target": "userModel" }
+    ]
+  }
+ */
+window.IOC = function( config ) {
   if( !config.register ) {
     throw "no dependencies defined"
   }
@@ -57,8 +54,3 @@ var API = function ( pathToJson ) {
 
   return IOC;
 };
-
-API.IOC = IOC;
-
-exports = module.exports = API;
-
