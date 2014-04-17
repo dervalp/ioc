@@ -1,6 +1,6 @@
 var should = require( 'should' ),
     sinon = require( 'sinon' ),
-    IOC = require( '../src/index' );
+    IOC = require( '../src/index' ).IOC;
 
 describe("Given an IOC", function( ) {
   it("should exist", function( ) {
