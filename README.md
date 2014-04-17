@@ -135,6 +135,33 @@ To define a property dependency for your object, you just need to define a stati
   var serviceB = IOC.create( "serviceB" );
   serviceB.greet(); //will output 'Hello Marty !'
 ```
+###Life time Management
+
+IOC lets you decide what kind of lifetime you want for you object. Currently, to make thing simple, you have the choice between a singleton and an instance per dependency.
+
+**Singleton**
+
+```
+  IOC.register( "serviceB" )
+     .define( serviceB )
+     .singleInstance( )
+     .inject({
+        name: "Marty";
+     });
+```
+
+**PerDependcy**
+
+```
+  IOC.register( "serviceB" )
+     .define( serviceB )
+     .instancePerDependency( )
+     .inject({
+        name: "Marty";
+     });
+```
+
+**Default is instancePerDependency**
 
 ###Express Example
 
@@ -145,3 +172,7 @@ You can find an express example here: https://github.com/dervalp/ioc/tree/master
 Of course, this is still an alpha version. The end goal is to provide an IOC container which will work seamlessly on browser and node.js. Moreover, we would like to add options to manage the lifetime of an object ( eager, lazy, singleton ) and a config file to quickly setup all the IOC.
 
 To be continued...
+
+###License
+
+MIT

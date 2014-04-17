@@ -3,6 +3,9 @@ var containers = { },
     container = require ("./container"),
     Locator = require("./locator");
 
+//TODO: factory
+//TODO: ioc.json
+
 var findService = function ( name ) {
   var result;
 
@@ -17,27 +20,33 @@ var findService = function ( name ) {
   return result;
 };
 
-var IOC = {
-  register: function ( propertyName ) {
+var IOC = function () {
+
+};
+
+IOC.register = function ( propertyName ) {
     if( containers[ propertyName ] ) 
       throw "already register";
 
     return containers[ propertyName ] = container.create( propertyName, this );
-  },
-  when: function ( name ) {
+};
+
+
+IOC.when = function ( name ) {
     return services[name] = new Locator( name );
-  },
-  create: function ( name ) {
-    var ctn = containers[ name ];
+};
 
-    if(!ctn)
-      throw "Not found container " + name;
+IOC.create = function ( name ) {
+  var ctn = containers[ name ];
 
-    return containers[ name ].create();
-  },
-  getContainer: function ( name ) {
+  if(!ctn)
+    throw "Not found container " + name;
+
+  return containers[ name ].create();
+};
+
+IOC.getContainer = function ( name ) {
     return findService ( name );
-  }
 };
 
 exports = module.exports = IOC;
