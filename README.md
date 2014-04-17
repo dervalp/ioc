@@ -91,6 +91,8 @@ Now that we have our 2 services registered, we need to bind the $greetingProvide
      .use( "serviceA" );
 ```
 
+**By default, you can directly use the name of your unique key prefix by a '$' sign when declaring your dependency"
+
 **Note: when binding the parameter, you do not need the '$' sign**
 
 Creating your object:
